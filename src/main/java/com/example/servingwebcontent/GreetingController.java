@@ -17,31 +17,40 @@ public class GreetingController {
     private MessageRepo messageRepo;
 
     @GetMapping("/greeting")
-    public String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Map<String, Object> model) {
+    public String greeting(
+            @RequestParam(name="name", required=false, defaultValue="World") String name,
+            Map<String, Object> model
+    ) {
         model.put("name", name);
         return "greeting";
     }
+
     @GetMapping
-    public String main(Map<String, Object> model){
+    public String main(Map<String, Object> model) {
         Iterable<Message> messages = messageRepo.findAll();
-        model.put("messages",messages);
+
+        model.put("messages", messages);
+
         return "main";
     }
+
     @GetMapping("/info")
-    public String info(@RequestParam(name="name", required=false, defaultValue="User") String info, Map<String, Object> model){
+    public String info(@RequestParam(name = "name", required = false, defaultValue = "User") String info, Map<String, Object> model) {
         model.put("name", info);
         return "info";
     }
-    @PostMapping
-    public String add(@RequestParam String text, @RequestParam String tag, Map<String, Object> model){
-       Message message = new Message(text, tag);
 
-       messageRepo.save(message);
+    @PostMapping
+    public String add(@RequestParam String text, @RequestParam String tag, Map<String, Object> model) {
+        Message message = new Message(text, tag);
+
+        messageRepo.save(message);
 
         Iterable<Message> messages = messageRepo.findAll();
-        model.put("messages",messages);
 
-       return "main";
+        model.put("messages", messages);
+
+        return "main";
     }
 
 }
