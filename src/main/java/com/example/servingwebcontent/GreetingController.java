@@ -2,13 +2,16 @@ package com.example.servingwebcontent;
 
 import com.example.servingwebcontent.domain.Message;
 import com.example.servingwebcontent.repos.MessageRepo;
+import org.hibernate.criterion.NotNullExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -34,12 +37,6 @@ public class GreetingController {
         return "main";
     }
 
-    @GetMapping("/info")
-    public String info(@RequestParam(name = "name", required = false, defaultValue = "User") String info, Map<String, Object> model) {
-        model.put("name", info);
-        return "info";
-    }
-
     @PostMapping
     public String add(@RequestParam String text, @RequestParam String tag, Map<String, Object> model) {
         Message message = new Message(text, tag);
@@ -47,6 +44,20 @@ public class GreetingController {
         messageRepo.save(message);
 
         Iterable<Message> messages = messageRepo.findAll();
+
+        model.put("messages", messages);
+
+        return "main";
+    }
+    @PostMapping("filter")
+    public String filter(@RequestParam String filter, Map<String, Object> model){
+        Iterable<Message> messages;
+        if (filter != null && !filter.isEmpty()){
+            messages = messageRepo.findByTag(filter);
+        }else {
+            messages = messageRepo.findAll();
+        }
+
 
         model.put("messages", messages);
 
