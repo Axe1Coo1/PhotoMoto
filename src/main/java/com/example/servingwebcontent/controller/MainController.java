@@ -1,9 +1,11 @@
 package com.example.servingwebcontent.controller;
 
 import com.example.servingwebcontent.domain.Message;
+import com.example.servingwebcontent.domain.User;
 import com.example.servingwebcontent.repos.MessageRepo;
 import org.hibernate.criterion.NotNullExpression;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +20,11 @@ import java.util.Map;
 public class MainController {
     @Autowired
     private MessageRepo messageRepo;
+
+    @GetMapping("/info")
+    public String info(Map<String, Object> model) {
+        return "info";
+    }
 
     @GetMapping("/")
     public String greeting(Map<String, Object> model) {
@@ -34,8 +41,11 @@ public class MainController {
     }
 
     @PostMapping("/main")
-    public String add(@RequestParam String text, @RequestParam String tag, Map<String, Object> model) {
-        Message message = new Message(text, tag);
+    public String add(
+            @AuthenticationPrincipal User user,
+            @RequestParam String text,
+            @RequestParam String tag, Map<String, Object> model) {
+        Message message = new Message(text, tag, user);
 
         messageRepo.save(message);
 
@@ -45,12 +55,13 @@ public class MainController {
 
         return "main";
     }
+
     @PostMapping("filter")
-    public String filter(@RequestParam String filter, Map<String, Object> model){
+    public String filter(@RequestParam String filter, Map<String, Object> model) {
         Iterable<Message> messages;
-        if (filter != null && !filter.isEmpty()){
+        if (filter != null && !filter.isEmpty()) {
             messages = messageRepo.findByTag(filter);
-        }else {
+        } else {
             messages = messageRepo.findAll();
         }
 
