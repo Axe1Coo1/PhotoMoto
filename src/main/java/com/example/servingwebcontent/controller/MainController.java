@@ -24,6 +24,11 @@ import java.util.UUID;
 
 @Controller
 public class MainController {
+    String messagesFieldName = "messages";
+    String filterFieldName = "filter";
+    String mainReturnedFieldName = "main";
+    String messageFieldName = "message";
+
     @Autowired
     private MessageRepo messageRepo;
 
@@ -58,12 +63,11 @@ public class MainController {
             messages = messageRepo.findAll();
         }
 
-        //messages and filter here are MAGIC STRINGS, create variables
-        model.addAttribute("messages", messages);
-        model.addAttribute("filter", filter);
 
-        //dont use magic strings
-        return "main";
+        model.addAttribute(messagesFieldName, messages);
+        model.addAttribute(filterFieldName, filter);
+
+        return mainReturnedFieldName;
     }
 
     //add swagger
@@ -79,7 +83,7 @@ public class MainController {
         if (bindingResult.hasErrors()) {
             Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
             model.mergeAttributes(errorsMap);
-            model.addAttribute("message", message);
+            model.addAttribute(messageFieldName, message);
         } else {
             //remove npe possibility
             if (file != null && !Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {
@@ -97,14 +101,14 @@ public class MainController {
                 message.setFilename(resultFilename);
             }
 
-            model.addAttribute("message", null);
+            model.addAttribute(messageFieldName, null);
 
             messageRepo.save(message);
         }
         Iterable<Message> messages = messageRepo.findAll();
 
-        model.addAttribute("messages", messages);
+        model.addAttribute(messagesFieldName, messages);
 
-        return "main";
+        return mainReturnedFieldName;
     }
 }
