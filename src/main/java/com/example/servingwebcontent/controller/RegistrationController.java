@@ -14,6 +14,8 @@ import javax.validation.Valid;
 import java.util.Map;
 
 @Controller
+
+//google about restExceptionHandler
 public class RegistrationController {
     @Autowired
     private UserService userService;

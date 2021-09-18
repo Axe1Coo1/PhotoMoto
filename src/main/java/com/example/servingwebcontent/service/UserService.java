@@ -4,6 +4,8 @@ package com.example.servingwebcontent.service;
 import com.example.servingwebcontent.domain.Role;
 import com.example.servingwebcontent.domain.User;
 import com.example.servingwebcontent.repos.UserRepo;
+import jdk.nashorn.internal.objects.annotations.Setter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,31 +14,30 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserService implements UserDetailsService {
-    @Autowired
-    private UserRepo userRepo;
-
-    @Autowired
-    private MailSender mailSender;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserRepo userRepo;
+    private final MailSender mailSender;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepo.findByUsername(username);
 
-        if (user == null){
+        if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
         return user;
     }
 
     private void sendMessage(User user) {
+        //dont use deprecated methods
         if (!StringUtils.isEmpty(user.getEmail())) {
             String message = String.format(
                     "Hello, %s! \n" +
@@ -49,6 +50,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    @Transactional
     public boolean addUser(User user) {
         User userFromDb = userRepo.findByUsername(user.getUsername());
 
@@ -68,7 +70,7 @@ public class UserService implements UserDetailsService {
         return true;
     }
 
-
+    @Transactional
     public boolean activateUser(String code) {
         User user = userRepo.findByActivationCode(code);
 
@@ -87,6 +89,7 @@ public class UserService implements UserDetailsService {
         return userRepo.findAll();
     }
 
+    @Transactional
     public void saveUser(User user, String username, Map<String, String> form) {
         user.setUsername(username);
 
@@ -105,13 +108,11 @@ public class UserService implements UserDetailsService {
         userRepo.save(user);
     }
 
+    @Transactional
     public void updateProfile(User user, String password, String email) {
         String userEmail = user.getEmail();
 
-        boolean isEmailChanged = (email != null && !email.equals((userEmail)) ||
-                userEmail != null && !userEmail.equals(email));
-
-        if (isEmailChanged) {
+        if (isEmailChanged(email, userEmail)) {
             user.setEmail(email);
 
             if (!StringUtils.isEmpty(email)) {
@@ -119,15 +120,20 @@ public class UserService implements UserDetailsService {
             }
         }
 
+        //dont use deprecated methods
         if (!StringUtils.isEmpty(password)) {
             user.setPassword(passwordEncoder.encode(password));
         }
 
         userRepo.save(user);
 
-        if (isEmailChanged) {
+        if (isEmailChanged(email, userEmail)) {
             sendMessage(user);
         }
+    }
 
+    private boolean isEmailChanged(String email, String userEmail) {
+        return email != null && !email.equals((userEmail)) ||
+                userEmail != null && !userEmail.equals(email);
     }
 }

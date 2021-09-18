@@ -3,6 +3,7 @@ package com.example.servingwebcontent.controller;
 import com.example.servingwebcontent.domain.Message;
 import com.example.servingwebcontent.domain.User;
 import com.example.servingwebcontent.repos.MessageRepo;
+import com.example.servingwebcontent.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,21 +26,19 @@ public class MainController {
     @Autowired
     private MessageRepo messageRepo;
 
+    @Autowired
+    private UserService userService;
+
     @Value("${upload.path}")
     private String uploadPath;
 
-    @GetMapping("/info")
-    public String info(Map<String, Object> model) {
-        return "info";
-    }
-
-    @GetMapping("/")
-    public String greeting(Map<String, Object> model) {
-        return "greeting";
-    }
-
     @GetMapping("/main")
+    //rename method
+    //ResponseEntity<String>
     public String main(@RequestParam(required = false, defaultValue = "") String filter, Model model) {
+        //        return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
+        //200,400,500,401,201
+        //dont use repositories in controllers, use services
         Iterable<Message> messages = messageRepo.findAll();
 
         if (filter != null && !filter.isEmpty()) {
@@ -48,21 +47,22 @@ public class MainController {
             messages = messageRepo.findAll();
         }
 
+        //messages and filter here are MAGIC STRINGS, create variables
         model.addAttribute("messages", messages);
         model.addAttribute("filter", filter);
 
-
+        //dont use magic strings
         return "main";
     }
 
+    //add swagger
     @PostMapping("/main")
-    public String add(
-            @AuthenticationPrincipal User user,
-            @Valid Message message,
-            BindingResult bindingResult,
-            Model model,
-            @RequestParam("file") MultipartFile file
-    ) throws IOException {
+    //rename the method, add what?
+    public String add(@AuthenticationPrincipal User user,
+                      @Valid Message message,
+                      BindingResult bindingResult,
+                      Model model,
+                      @RequestParam("file") MultipartFile file) throws IOException {
         message.setAuthor(user);
 
         if (bindingResult.hasErrors()) {
@@ -70,9 +70,11 @@ public class MainController {
             model.mergeAttributes(errorsMap);
             model.addAttribute("message", message);
         } else {
-            if (file != null && !file.getOriginalFilename().isEmpty()) {
+            //remove npe possibility
+            if (file != null && !Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {
                 File uploadDir = new File(uploadPath);
                 if (!uploadDir.exists()) {
+                    //?????
                     uploadDir.mkdir();
                 }
 
@@ -94,8 +96,4 @@ public class MainController {
 
         return "main";
     }
-
-
-
-
 }
