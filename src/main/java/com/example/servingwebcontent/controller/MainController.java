@@ -19,6 +19,7 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 @Controller
@@ -31,6 +32,16 @@ public class MainController {
 
     @Value("${upload.path}")
     private String uploadPath;
+
+    @GetMapping("/info")
+    public String info(Map<String, Object> model) {
+        return "info";
+    }
+
+    @GetMapping("/")
+    public String greeting(Map<String, Object> model) {
+        return "greeting";
+    }
 
     @GetMapping("/main")
     //rename method
