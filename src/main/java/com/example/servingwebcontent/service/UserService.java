@@ -37,16 +37,18 @@ public class UserService implements UserDetailsService {
     }
 
     private void sendMessage(User user) {
-        //dont use deprecated methods
-        if (!StringUtils.isEmpty(user.getEmail())) {
+        String welcomeMessageName = "Hello, %s! \n" +
+                "Welcome to PhotoMoto. Please, visit next link " +
+                "to verify your account: http://localhost:8080/activate/%s";
+        if (StringUtils.hasLength(user.getEmail())) {
             String message = String.format(
-                    "Hello, %s! \n" +
-                            "Welcome to PhotoMoto. Please, visit next link to verify your account: http://localhost:8080/activate/%s",
+                    welcomeMessageName,
                     user.getUsername(),
                     user.getActivationCode()
             );
 
-            mailSender.send(user.getEmail(), "Activation code", message);
+            String activationCodeName = "Activation code";
+            mailSender.send(user.getEmail(), activationCodeName, message);
         }
     }
 
@@ -115,13 +117,12 @@ public class UserService implements UserDetailsService {
         if (isEmailChanged(email, userEmail)) {
             user.setEmail(email);
 
-            if (!StringUtils.isEmpty(email)) {
+            if (StringUtils.hasLength(email)) {
                 user.setActivationCode(UUID.randomUUID().toString());
             }
         }
 
-        //dont use deprecated methods
-        if (!StringUtils.isEmpty(password)) {
+        if (StringUtils.hasLength(password)) {
             user.setPassword(passwordEncoder.encode(password));
         }
 

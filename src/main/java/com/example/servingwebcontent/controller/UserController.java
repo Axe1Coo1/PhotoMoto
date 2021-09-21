@@ -3,14 +3,12 @@ package com.example.servingwebcontent.controller;
 import com.example.servingwebcontent.domain.Role;
 import com.example.servingwebcontent.domain.User;
 import com.example.servingwebcontent.service.UserService;
-import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import java.util.Map;
 
@@ -25,7 +23,8 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
     public String userList(Model model) {
-        model.addAttribute("users", userService.findAll());
+        String usersName = "users";
+        model.addAttribute(usersName, userService.findAll());
 
         return "userList";
     }
@@ -34,7 +33,8 @@ public class UserController {
     @GetMapping("{user}")
     public String userEditForm(@PathVariable User user, Model model) {
         model.addAttribute("user", user);
-        model.addAttribute("roles", Role.values());
+        String rolesName = "roles";
+        model.addAttribute(rolesName, Role.values());
 
         return "userEdit";
     }
@@ -53,8 +53,10 @@ public class UserController {
 
     @GetMapping("profile")
     public String getProfile(Model model, @AuthenticationPrincipal User user) {
-        model.addAttribute("username", user.getUsername());
-        model.addAttribute("email", user.getEmail());
+        String usernameName = "username";
+        model.addAttribute(usernameName, user.getUsername());
+        String emailName = "email";
+        model.addAttribute(emailName, user.getEmail());
 
         return "profile";
     }

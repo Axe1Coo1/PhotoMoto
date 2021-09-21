@@ -28,20 +28,23 @@ public class RegistrationController {
 
     @PostMapping("/registration")
     public String addUser(@Valid User user, BindingResult bindingResult, Model model) {
+        String registrationName = "registration";
         if (user.getPassword() != null && !user.getPassword().equals(user.getPassword2())){
-            model.addAttribute("passwordError", "Passwords are different!");
-            return "registration";
+            String passwordErrorName = "passwordError";
+            model.addAttribute(passwordErrorName, "Passwords are different!");
+            return registrationName;
         }
         if (bindingResult.hasErrors()){
             Map<String, String> errors = ControllerUtils.getErrors(bindingResult);
 
             model.mergeAttributes(errors);
 
-            return "registration";
+            return registrationName;
         }
         if (!userService.addUser(user)) {
-            model.addAttribute("usernameError", "User exists!");
-            return "registration";
+            String usernameErrorName = "usernameError";
+            model.addAttribute(usernameErrorName, "User exists!");
+            return registrationName;
         }
 
         return "redirect:/login";
@@ -51,10 +54,11 @@ public class RegistrationController {
     public String activate(Model model, @PathVariable String code) {
         boolean isActivated = userService.activateUser(code);
 
+        String messageName = "message";
         if(isActivated) {
-            model.addAttribute("message", "User successfully activated!");
+            model.addAttribute(messageName, "User successfully activated!");
         }else {
-            model.addAttribute("message", "Activation code is not found!");
+            model.addAttribute(messageName, "Activation code is not found!");
         }
 
 
