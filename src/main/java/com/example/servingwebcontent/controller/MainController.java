@@ -3,9 +3,9 @@ package com.example.servingwebcontent.controller;
 import com.example.servingwebcontent.domain.Message;
 import com.example.servingwebcontent.domain.User;
 import com.example.servingwebcontent.repos.MessageRepo;
+import com.example.servingwebcontent.service.MessageService;
 import com.example.servingwebcontent.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,16 +16,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.File;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
 
 @Controller
 public class MainController {
     String messagesFieldName = "messages";
-    String filterFieldName = "filter";
     String mainReturnedFieldName = "main";
     String messageFieldName = "message";
 
@@ -35,39 +30,12 @@ public class MainController {
     @Autowired
     private UserService userService;
 
-    @Value("${upload.path}")
-    private String uploadPath;
-
-    @GetMapping("/info")
-    public String info(Map<String, Object> model) {
-        return "info";
-    }
-
-    @GetMapping("/")
-    public String greeting(Map<String, Object> model) {
-        return "greeting";
-    }
+    @Autowired
+    private MessageService messageService;
 
     @GetMapping("/main")
-    //rename method
-    //ResponseEntity<String>
-    public String main(@RequestParam(required = false, defaultValue = "") String filter, Model model) {
-        //        return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
-        //200,400,500,401,201
-        //dont use repositories in controllers, use services
-        Iterable<Message> messages = messageRepo.findAll();
-
-        if (filter != null && !filter.isEmpty()) {
-            messages = messageRepo.findByTag(filter);
-        } else {
-            messages = messageRepo.findAll();
-        }
-
-
-        model.addAttribute(messagesFieldName, messages);
-        model.addAttribute(filterFieldName, filter);
-
-        return mainReturnedFieldName;
+    public String findMessages(@RequestParam(required = false, defaultValue = "") String filter, Model model) {
+        return messageService.mainFindAll(filter, model);
     }
 
     //add swagger
@@ -77,35 +45,8 @@ public class MainController {
                              BindingResult bindingResult,
                              Model model,
                              @RequestParam("file") MultipartFile file) throws IOException {
-        message.setAuthor(user);
-
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
-            model.mergeAttributes(errorsMap);
-            model.addAttribute(messageFieldName, message);
-        } else {
-            if (file != null && !Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {
-                File uploadDir = new File(uploadPath);
-                if (!uploadDir.exists()) {
-                    uploadDir.mkdir();
-                }
-
-                String uuidFile = UUID.randomUUID().toString();
-                String resultFilename = uuidFile + "." + file.getOriginalFilename();
-
-                file.transferTo(new File(uploadPath + "/" + resultFilename));
-
-                message.setFilename(resultFilename);
-            }
-
-            model.addAttribute(messageFieldName, null);
-
-            messageRepo.save(message);
-        }
-        Iterable<Message> messages = messageRepo.findAll();
-
-        model.addAttribute(messagesFieldName, messages);
-
-        return mainReturnedFieldName;
+        return messageService.addMessages(user, message, bindingResult, model, file);
     }
+
+
 }
