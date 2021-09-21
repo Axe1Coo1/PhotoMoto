@@ -20,15 +20,6 @@ import java.io.IOException;
 
 @Controller
 public class MainController {
-    String messagesFieldName = "messages";
-    String mainReturnedFieldName = "main";
-    String messageFieldName = "message";
-
-    @Autowired
-    private MessageRepo messageRepo;
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private MessageService messageService;
