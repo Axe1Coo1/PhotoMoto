@@ -72,12 +72,11 @@ public class MainController {
 
     //add swagger
     @PostMapping("/main")
-    //rename the method, add what?
-    public String add(@AuthenticationPrincipal User user,
-                      @Valid Message message,
-                      BindingResult bindingResult,
-                      Model model,
-                      @RequestParam("file") MultipartFile file) throws IOException {
+    public String addMessage(@AuthenticationPrincipal User user,
+                             @Valid Message message,
+                             BindingResult bindingResult,
+                             Model model,
+                             @RequestParam("file") MultipartFile file) throws IOException {
         message.setAuthor(user);
 
         if (bindingResult.hasErrors()) {
@@ -85,11 +84,9 @@ public class MainController {
             model.mergeAttributes(errorsMap);
             model.addAttribute(messageFieldName, message);
         } else {
-            //remove npe possibility
             if (file != null && !Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {
                 File uploadDir = new File(uploadPath);
                 if (!uploadDir.exists()) {
-                    //?????
                     uploadDir.mkdir();
                 }
 
