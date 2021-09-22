@@ -31,7 +31,8 @@ public class RegistrationController {
         String registrationName = "registration";
         if (user.getPassword() != null && !user.getPassword().equals(user.getPassword2())){
             String passwordErrorName = "passwordError";
-            model.addAttribute(passwordErrorName, "Passwords are different!");
+            String passwordAreDifferentName = "Passwords are different!";
+            model.addAttribute(passwordErrorName, passwordAreDifferentName);
             return registrationName;
         }
         if (bindingResult.hasErrors()){
@@ -42,8 +43,8 @@ public class RegistrationController {
             return registrationName;
         }
         if (!userService.addUser(user)) {
-            String usernameErrorName = "usernameError";
-            model.addAttribute(usernameErrorName, "User exists!");
+            String usernameErrorMessage = "usernameError";
+            model.addAttribute(usernameErrorMessage, "User exists!");
             return registrationName;
         }
 
@@ -56,9 +57,11 @@ public class RegistrationController {
 
         String messageName = "message";
         if(isActivated) {
-            model.addAttribute(messageName, "User successfully activated!");
+            String userActivatedMessage = "User successfully activated!";
+            model.addAttribute(messageName, userActivatedMessage);
         }else {
-            model.addAttribute(messageName, "Activation code is not found!");
+            String activationCodeIsNotFoundMessage = "Activation code is not found!";
+            model.addAttribute(messageName, activationCodeIsNotFoundMessage);
         }
 
 

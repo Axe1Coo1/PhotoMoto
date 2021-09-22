@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class MessageService {
     String filterFieldName = "filter";
     String mainReturnedFieldName = "main";
 
-
+    @Transactional
     public String mainFindAll(@RequestParam(required = false, defaultValue = "") String filter, Model model) {
 
         Iterable<Message> messages;
@@ -49,7 +50,7 @@ public class MessageService {
 
         return mainReturnedFieldName;
     }
-
+    @Transactional
     public String addMessages  (User user, Message message, BindingResult bindingResult, Model model, MultipartFile file) throws IOException {
         message.setAuthor(user);
 

@@ -37,12 +37,12 @@ public class UserService implements UserDetailsService {
     }
 
     private void sendMessage(User user) {
-        String welcomeMessageName = "Hello, %s! \n" +
+        String welcomeMessage = "Hello, %s! \n" +
                 "Welcome to PhotoMoto. Please, visit next link " +
                 "to verify your account: http://localhost:8080/activate/%s";
         if (StringUtils.hasLength(user.getEmail())) {
             String message = String.format(
-                    welcomeMessageName,
+                    welcomeMessage,
                     user.getUsername(),
                     user.getActivationCode()
             );
