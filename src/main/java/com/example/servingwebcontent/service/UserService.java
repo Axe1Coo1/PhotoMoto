@@ -3,7 +3,9 @@ package com.example.servingwebcontent.service;
 
 import com.example.servingwebcontent.domain.Role;
 import com.example.servingwebcontent.domain.User;
+import com.example.servingwebcontent.dto.UserDto;
 import com.example.servingwebcontent.repos.UserRepo;
+import com.example.servingwebcontent.utils.MessageConvertor;
 import jdk.nashorn.internal.objects.annotations.Setter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +30,13 @@ public class UserService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepo.findByUsername(username);
+        User userEntity = userRepo.findByUsername(username);
+        UserDto userDto = MessageConvertor.ConvertToDto(userEntity);
 
-        if (user == null) {
+        if (userEntity == null) {
             throw new UsernameNotFoundException("User not found");
         }
-        return user;
+        return userEntity;
     }
 
     private void sendMessage(User user) {

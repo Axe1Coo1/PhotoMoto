@@ -17,12 +17,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Map;
 
 @Controller
 public class MainController {
 
     @Autowired
     private MessageService messageService;
+
+    @GetMapping("/")
+    public String greeting(Map<String, Object> model) {
+        return "greeting";
+    }
 
     @GetMapping("/main")
     public String findMessages(@RequestParam(required = false, defaultValue = "") String filter, Model model) {
