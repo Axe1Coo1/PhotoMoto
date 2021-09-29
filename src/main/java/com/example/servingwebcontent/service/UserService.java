@@ -3,12 +3,8 @@ package com.example.servingwebcontent.service;
 
 import com.example.servingwebcontent.domain.Role;
 import com.example.servingwebcontent.domain.User;
-import com.example.servingwebcontent.dto.UserDto;
 import com.example.servingwebcontent.repos.UserRepo;
-import com.example.servingwebcontent.utils.MessageConvertor;
-import jdk.nashorn.internal.objects.annotations.Setter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -31,7 +27,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User userEntity = userRepo.findByUsername(username);
-        UserDto userDto = MessageConvertor.ConvertToDto(userEntity);
+//        UserDto userDto = MessageConvertor.ConvertToDto(userEntity);
 
         if (userEntity == null) {
             throw new UsernameNotFoundException("User not found");
