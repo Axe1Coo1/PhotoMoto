@@ -2,9 +2,7 @@ package com.example.servingwebcontent.controller;
 
 import com.example.servingwebcontent.domain.Message;
 import com.example.servingwebcontent.domain.User;
-import com.example.servingwebcontent.repos.MessageRepo;
 import com.example.servingwebcontent.service.MessageService;
-import com.example.servingwebcontent.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;

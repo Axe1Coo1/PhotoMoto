@@ -56,6 +56,6 @@ public class LoginTest {
     public void badCredentials() throws Exception{
         this.mockMvc.perform(formLogin().user("wrongUser").password("wrongPassword"))
                 .andDo(print())
-                .andExpect(status().isForbidden());
+                .andExpect(redirectedUrl("/login?error"));
     }
 }
