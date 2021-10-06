@@ -16,7 +16,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Message {
+public class MessageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

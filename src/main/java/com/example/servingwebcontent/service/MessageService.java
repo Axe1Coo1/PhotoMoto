@@ -1,11 +1,10 @@
 package com.example.servingwebcontent.service;
 
 import com.example.servingwebcontent.controller.ControllerUtils;
-import com.example.servingwebcontent.domain.Message;
+import com.example.servingwebcontent.domain.MessageEntity;
 import com.example.servingwebcontent.domain.User;
 import com.example.servingwebcontent.dto.MessageDto;
 import com.example.servingwebcontent.repos.MessageRepo;
-import com.example.servingwebcontent.utils.MessageConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -41,14 +40,14 @@ public class MessageService {
     @Transactional
     public String mainFindAll(@RequestParam(required = false, defaultValue = "") String filter, Model model) {
 
-        List<Message> messages;
+        List<MessageEntity> messageEntities;
         List<MessageDto> messagesDto;
 
         if (filter != null && !filter.isEmpty()) {
             messagesDto = messageRepo.findByTag(filter).stream().map(MappingUtils::mapToMessageDto).collect(Collectors.toList());
         } else {
-            messages = (List<Message>) messageRepo.findAll();
-            messagesDto = messages.stream().map(MappingUtils::mapToMessageDto).collect(Collectors.toList());
+            messageEntities = (List<MessageEntity>) messageRepo.findAll();
+            messagesDto = messageEntities.stream().map(MappingUtils::mapToMessageDto).collect(Collectors.toList());
         }
 
         model.addAttribute(messagesFieldName, messagesDto);
@@ -59,12 +58,12 @@ public class MessageService {
     }
 
     @Transactional
-    public String addMessages(User user, Message message, BindingResult bindingResult, Model model, MultipartFile file) throws IOException {
-        message.setAuthor(user);
+    public String addMessages(User user, MessageEntity messageEntity, BindingResult bindingResult, Model model, MultipartFile file) throws IOException {
+        messageEntity.setAuthor(user);
         if (bindingResult.hasErrors()) {
             Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
             model.mergeAttributes(errorsMap);
-            model.addAttribute(messageFieldName, message);
+            model.addAttribute(messageFieldName, messageEntity);
         } else {
             if (file != null && !Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {
                 File uploadDir = new File(uploadPath);
@@ -77,17 +76,17 @@ public class MessageService {
 
                 file.transferTo(new File(uploadPath + "/" + resultFilename));
 
-                message.setFilename(resultFilename);
+                messageEntity.setFilename(resultFilename);
             }
 
             model.addAttribute(messageFieldName, null);
 
-            messageRepo.save(message);
+            messageRepo.save(messageEntity);
         }
-        List<Message> messages;
+        List<MessageEntity> messageEntities;
         List<MessageDto> messagesDto;
-        messages = (List<Message>) messageRepo.findAll();
-        messagesDto = messages.stream().map(MappingUtils::mapToMessageDto).collect(Collectors.toList());
+        messageEntities = (List<MessageEntity>) messageRepo.findAll();
+        messagesDto = messageEntities.stream().map(MappingUtils::mapToMessageDto).collect(Collectors.toList());
 
 
         model.addAttribute(messagesFieldName, messagesDto);

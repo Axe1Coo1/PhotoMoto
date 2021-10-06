@@ -1,12 +1,12 @@
 package com.example.servingwebcontent.utils;
 
-import com.example.servingwebcontent.domain.Message;
+import com.example.servingwebcontent.domain.MessageEntity;
 import com.example.servingwebcontent.dto.MessageDto;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MappingUtils {
-    public static MessageDto mapToMessageDto(Message entity){
+    public static MessageDto mapToMessageDto(MessageEntity entity){
         MessageDto dto = new MessageDto();
         dto.setAuthor(entity.getAuthor());
         dto.setFilename(entity.getFilename());
@@ -16,8 +16,8 @@ public class MappingUtils {
         return dto;
     }
 
-    public Message mapToMessageEntity(MessageDto dto){
-        Message entity = new Message();
+    public MessageEntity mapToMessageEntity(MessageDto dto){
+        MessageEntity entity = new MessageEntity();
         entity.setAuthor(dto.getAuthor());
         entity.setFilename(dto.getFilename());
         entity.setId(dto.getId());
