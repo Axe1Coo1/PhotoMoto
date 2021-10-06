@@ -1,6 +1,6 @@
 package com.example.servingwebcontent.controller;
 
-import com.example.servingwebcontent.domain.User;
+import com.example.servingwebcontent.domain.UserEntity;
 import com.example.servingwebcontent.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,9 +27,9 @@ public class RegistrationController {
     }
 
     @PostMapping("/registration")
-    public String addUser(@Valid User user, BindingResult bindingResult, Model model) {
+    public String addUser(@Valid UserEntity userEntity, BindingResult bindingResult, Model model) {
         String registrationName = "registration";
-        if (user.getPassword() != null && !user.getPassword().equals(user.getPassword2())){
+        if (userEntity.getPassword() != null && !userEntity.getPassword().equals(userEntity.getPassword2())){
             String passwordErrorName = "passwordError";
             String passwordAreDifferentName = "Passwords are different!";
             model.addAttribute(passwordErrorName, passwordAreDifferentName);
@@ -42,7 +42,7 @@ public class RegistrationController {
 
             return registrationName;
         }
-        if (!userService.addUser(user)) {
+        if (!userService.addUser(userEntity)) {
             String usernameErrorMessage = "usernameError";
             model.addAttribute(usernameErrorMessage, "User exists!");
             return registrationName;

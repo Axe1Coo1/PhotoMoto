@@ -2,7 +2,7 @@ package com.example.servingwebcontent.service;
 
 import com.example.servingwebcontent.controller.ControllerUtils;
 import com.example.servingwebcontent.domain.MessageEntity;
-import com.example.servingwebcontent.domain.User;
+import com.example.servingwebcontent.domain.UserEntity;
 import com.example.servingwebcontent.dto.MessageDto;
 import com.example.servingwebcontent.repos.MessageRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +58,8 @@ public class MessageService {
     }
 
     @Transactional
-    public String addMessages(User user, MessageEntity messageEntity, BindingResult bindingResult, Model model, MultipartFile file) throws IOException {
-        messageEntity.setAuthor(user);
+    public String addMessages(UserEntity userEntity, MessageEntity messageEntity, BindingResult bindingResult, Model model, MultipartFile file) throws IOException {
+        messageEntity.setAuthor(userEntity);
         if (bindingResult.hasErrors()) {
             Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
             model.mergeAttributes(errorsMap);

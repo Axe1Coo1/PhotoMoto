@@ -1,7 +1,7 @@
 package com.example.servingwebcontent.controller;
 
 import com.example.servingwebcontent.domain.Role;
-import com.example.servingwebcontent.domain.User;
+import com.example.servingwebcontent.domain.UserEntity;
 import com.example.servingwebcontent.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,9 +30,9 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("{user}")
-    public String userEditForm(@PathVariable User user, Model model) {
-        model.addAttribute("user", user);
+    @GetMapping("{userEntity}")
+    public String userEditForm(@PathVariable UserEntity userEntity, Model model) {
+        model.addAttribute("user", userEntity);
         String rolesName = "roles";
         model.addAttribute(rolesName, Role.values());
 
@@ -44,30 +44,30 @@ public class UserController {
     public String userSave(
             @RequestParam String username,
             @RequestParam Map<String, String> form,
-            @RequestParam("userId") User user
+            @RequestParam("userEntity") UserEntity userEntity
     ) {
-        userService.saveUser(user, username, form);
+        userService.saveUser(userEntity, username, form);
 
         return "redirect:/user";
     }
 
     @GetMapping("profile")
-    public String getProfile(Model model, @AuthenticationPrincipal User user) {
+    public String getProfile(Model model, @AuthenticationPrincipal UserEntity userEntity) {
         String usernameName = "username";
-        model.addAttribute(usernameName, user.getUsername());
+        model.addAttribute(usernameName, userEntity.getUsername());
         String emailName = "email";
-        model.addAttribute(emailName, user.getEmail());
+        model.addAttribute(emailName, userEntity.getEmail());
 
         return "profile";
     }
 
     @PostMapping("profile")
     public String updateProfile(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal UserEntity userEntity,
             @RequestParam String password,
             @RequestParam String email
     ) {
-        userService.updateProfile(user, password, email);
+        userService.updateProfile(userEntity, password, email);
 
         return "redirect:/user/profile";
     }

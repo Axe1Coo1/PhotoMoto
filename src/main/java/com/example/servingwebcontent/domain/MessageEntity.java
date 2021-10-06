@@ -27,7 +27,7 @@ public class MessageEntity {
     private String tag;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
-    private User author;
+    private UserEntity author;
     private String filename;
 
     public String getAuthorName() {

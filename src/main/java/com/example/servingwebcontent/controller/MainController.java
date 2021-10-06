@@ -1,7 +1,7 @@
 package com.example.servingwebcontent.controller;
 
 import com.example.servingwebcontent.domain.MessageEntity;
-import com.example.servingwebcontent.domain.User;
+import com.example.servingwebcontent.domain.UserEntity;
 import com.example.servingwebcontent.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,12 +35,12 @@ public class MainController {
 
     //add swagger
     @PostMapping("/main")
-    public String addMessage(@AuthenticationPrincipal User user,
+    public String addMessage(@AuthenticationPrincipal UserEntity userEntity,
                              @Valid MessageEntity messageEntity,
                              BindingResult bindingResult,
                              Model model,
                              @RequestParam("file") MultipartFile file) throws IOException {
-        return messageService.addMessages(user, messageEntity, bindingResult, model, file);
+        return messageService.addMessages(userEntity, messageEntity, bindingResult, model, file);
     }
 
 

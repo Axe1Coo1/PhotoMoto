@@ -1,6 +1,6 @@
 package com.example.servingwebcontent.dto;
 
-import com.example.servingwebcontent.domain.User;
+import com.example.servingwebcontent.domain.UserEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +10,7 @@ public class MessageDto {
     private Long id;
     private String text;
     private String tag;
-    private User author;
+    private UserEntity author;
     private String filename;
 
     public String getAuthorName() {
