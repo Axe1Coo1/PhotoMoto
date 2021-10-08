@@ -44,15 +44,18 @@ public class MessageService {
         List<MessageDto> messagesDto;
 
         if (filter != null && !filter.isEmpty()) {
-            messagesDto = messageRepo.findByTag(filter).stream().map(MappingUtils::mapToMessageDto).collect(Collectors.toList());
+            messagesDto = messageRepo.findByTag(filter).stream()
+                    .map(MappingUtils::mapToMessageDto)
+                    .collect(Collectors.toList());
         } else {
             messageEntities = (List<MessageEntity>) messageRepo.findAll();
-            messagesDto = messageEntities.stream().map(MappingUtils::mapToMessageDto).collect(Collectors.toList());
+            messagesDto = messageEntities.stream()
+                    .map(MappingUtils::mapToMessageDto)
+                    .collect(Collectors.toList());
         }
 
         model.addAttribute(messagesFieldName, messagesDto);
         model.addAttribute(filterFieldName, filter);
-
 
         return mainReturnedFieldName;
     }

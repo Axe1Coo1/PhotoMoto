@@ -16,10 +16,10 @@ import java.util.Set;
 public class SwaggerConfig {
 
     public static final Contact DEFAULT_CONTACT = new Contact(
-            "Photo Moto", "http://www.PhotoMoto.com", "photomotosocial@gmail.com");
+            "Photo Moto", "http://localhost:8080/", "photomotosocial@gmail.com");
 
     public static final ApiInfo DEFAULT_API_INFO = new ApiInfo(
-            "Awesome API Title", "Awesome API Description", "1.0",
+            "Photo Moto", "Awesome Description", "1.0",
             "urn:tos", DEFAULT_CONTACT,
             "Apache 2.0", "http://www.apache.org/licenses/LICENSE-2.0", Arrays.asList());
 

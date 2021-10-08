@@ -4,6 +4,7 @@ import com.example.servingwebcontent.domain.Role;
 import com.example.servingwebcontent.domain.UserEntity;
 import com.example.servingwebcontent.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public String userList(Model model) {
         String usersName = "users";
         model.addAttribute(usersName, userService.findAll());
@@ -31,6 +33,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("{userEntity}")
+    @ResponseStatus(HttpStatus.OK)
     public String userEditForm(@PathVariable UserEntity userEntity, Model model) {
         model.addAttribute("user", userEntity);
         String rolesName = "roles";
@@ -41,6 +44,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
+    @ResponseStatus(HttpStatus.OK)
     public String userSave(
             @RequestParam String username,
             @RequestParam Map<String, String> form,
@@ -52,6 +56,7 @@ public class UserController {
     }
 
     @GetMapping("profile")
+    @ResponseStatus(HttpStatus.OK)
     public String getProfile(Model model, @AuthenticationPrincipal UserEntity userEntity) {
         String usernameName = "username";
         model.addAttribute(usernameName, userEntity.getUsername());
@@ -62,6 +67,7 @@ public class UserController {
     }
 
     @PostMapping("profile")
+    @ResponseStatus(HttpStatus.OK)
     public String updateProfile(
             @AuthenticationPrincipal UserEntity userEntity,
             @RequestParam String password,
