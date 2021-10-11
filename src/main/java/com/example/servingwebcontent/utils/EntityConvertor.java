@@ -8,10 +8,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MessageConvertor {
+public class EntityConvertor {
     private static ModelMapper modelMapper = null;
 
-    public MessageConvertor() {
+    public EntityConvertor() {
         modelMapper = new ModelMapper();
     }
     public static MessageDto ConvertToDto(MessageEntity messageEntity){
@@ -19,6 +19,9 @@ public class MessageConvertor {
     }
     public static UserDto ConvertToDto(UserEntity userEntity){
         return modelMapper.map(userEntity, UserDto.class);
+    }
+    public static UserEntity ConvertToEntity(UserDto userDto){
+        return modelMapper.map(userDto, UserEntity.class);
     }
 
 
