@@ -1,7 +1,9 @@
 package com.example.servingwebcontent.controller;
 
 import com.example.servingwebcontent.domain.UserEntity;
+import com.example.servingwebcontent.dto.UserDto;
 import com.example.servingwebcontent.service.UserService;
+import com.example.servingwebcontent.utils.EntityConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -32,8 +34,9 @@ public class RegistrationController {
     @PostMapping("/registration")
     @ResponseStatus(HttpStatus.OK)
     public String addUser(@Valid UserEntity userEntity, BindingResult bindingResult, Model model) {
+        UserDto userDto = EntityConvertor.ConvertToDto(userEntity);
         String registrationName = "registration";
-        if (userEntity.getPassword() != null && !userEntity.getPassword().equals(userEntity.getPassword2())){
+        if (userDto.getPassword() != null && !userDto.getPassword().equals(userDto.getPassword2())){
             String passwordErrorName = "passwordError";
             String passwordAreDifferentName = "Passwords are different!";
             model.addAttribute(passwordErrorName, passwordAreDifferentName);
@@ -46,7 +49,7 @@ public class RegistrationController {
 
             return registrationName;
         }
-        if (!userService.addUser(userEntity)) {
+        if (!userService.addUser(userDto)) {
             String usernameErrorMessage = "usernameError";
             model.addAttribute(usernameErrorMessage, "User exists!");
             return registrationName;

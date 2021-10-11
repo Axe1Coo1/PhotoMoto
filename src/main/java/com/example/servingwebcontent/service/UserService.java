@@ -3,7 +3,9 @@ package com.example.servingwebcontent.service;
 
 import com.example.servingwebcontent.domain.Role;
 import com.example.servingwebcontent.domain.UserEntity;
+import com.example.servingwebcontent.dto.UserDto;
 import com.example.servingwebcontent.repos.UserRepo;
+import com.example.servingwebcontent.utils.EntityConvertor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,46 +29,47 @@ public class UserService implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity userEntity = userRepo.findByUsername(username);
-//        UserDto userDto = MessageConvertor.ConvertToDto(userEntity);
+        UserDto userDto = EntityConvertor.ConvertToDto(userEntity);
 
-        if (userEntity == null) {
+        if (userDto == null) {
             throw new UsernameNotFoundException("User not found");
         }
-        return userEntity;
+        return userDto;
     }
 
-    private void sendMessage(UserEntity userEntity) {
+    private void sendMessage(UserDto userDto) {
         String welcomeMessage = "Hello, %s! \n" +
                 "Welcome to PhotoMoto. Please, visit next link " +
                 "to verify your account: http://localhost:8080/activate/%s";
-        if (StringUtils.hasLength(userEntity.getEmail())) {
+        if (StringUtils.hasLength(userDto.getEmail())) {
             String message = String.format(
                     welcomeMessage,
-                    userEntity.getUsername(),
-                    userEntity.getActivationCode()
+                    userDto.getUsername(),
+                    userDto.getActivationCode()
             );
 
             String activationCodeName = "Activation code";
-            mailSender.send(userEntity.getEmail(), activationCodeName, message);
+            mailSender.send(userDto.getEmail(), activationCodeName, message);
         }
     }
 
     @Transactional
-    public boolean addUser(UserEntity userEntity) {
-        UserEntity userEntityFromDb = userRepo.findByUsername(userEntity.getUsername());
+    public boolean addUser(UserDto userDto) {
+        UserEntity userEntityFromDb = userRepo.findByUsername(userDto.getUsername());
 
         if (userEntityFromDb != null) {
             return false;
         }
 
-        userEntity.setActive(true);
-        userEntity.setRoles(Collections.singleton(Role.USER));
-        userEntity.setActivationCode(UUID.randomUUID().toString());
-        userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
+        userDto.setActive(true);
+        userDto.setRoles(Collections.singleton(Role.USER));
+        userDto.setActivationCode(UUID.randomUUID().toString());
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
+        UserEntity userEntity = EntityConvertor.ConvertToEntity(userDto);
         userRepo.save(userEntity);
 
-        sendMessage(userEntity);
+        sendMessage(userDto);
 
         return true;
     }
@@ -74,15 +77,11 @@ public class UserService implements UserDetailsService {
     @Transactional
     public boolean activateUser(String code) {
         UserEntity userEntity = userRepo.findByActivationCode(code);
-
         if (userEntity == null) {
             return false;
         }
-
         userEntity.setActivationCode(null);
-
         userRepo.save(userEntity);
-
         return true;
     }
 
@@ -93,42 +92,38 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void saveUser(UserEntity userEntity, String username, Map<String, String> form) {
         userEntity.setUsername(username);
-
         Set<String> roles = Arrays.stream(Role.values())
                 .map(Role::name)
                 .collect(Collectors.toSet());
-
         userEntity.getRoles().clear();
-
         for (String key : form.keySet()) {
             if (roles.contains(key)) {
                 userEntity.getRoles().add(Role.valueOf(key));
             }
         }
-
         userRepo.save(userEntity);
     }
 
     @Transactional
-    public void updateProfile(UserEntity userEntity, String password, String email) {
-        String userEmail = userEntity.getEmail();
+    public void updateProfile(UserDto userDto, String password, String email) {
+        String userEmail = userDto.getEmail();
 
         if (isEmailChanged(email, userEmail)) {
-            userEntity.setEmail(email);
+            userDto.setEmail(email);
 
             if (StringUtils.hasLength(email)) {
-                userEntity.setActivationCode(UUID.randomUUID().toString());
+                userDto.setActivationCode(UUID.randomUUID().toString());
             }
         }
 
         if (StringUtils.hasLength(password)) {
-            userEntity.setPassword(passwordEncoder.encode(password));
+            userDto.setPassword(passwordEncoder.encode(password));
         }
 
-        userRepo.save(userEntity);
+        userRepo.save(EntityConvertor.ConvertToEntity(userDto));
 
         if (isEmailChanged(email, userEmail)) {
-            sendMessage(userEntity);
+            sendMessage(userDto);
         }
     }
 

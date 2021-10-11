@@ -2,6 +2,7 @@ package com.example.servingwebcontent.controller;
 
 import com.example.servingwebcontent.domain.Role;
 import com.example.servingwebcontent.domain.UserEntity;
+import com.example.servingwebcontent.dto.UserDto;
 import com.example.servingwebcontent.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -57,11 +58,11 @@ public class UserController {
 
     @GetMapping("profile")
     @ResponseStatus(HttpStatus.OK)
-    public String getProfile(Model model, @AuthenticationPrincipal UserEntity userEntity) {
+    public String getProfile(Model model, @AuthenticationPrincipal UserDto userDto) {
         String usernameName = "username";
-        model.addAttribute(usernameName, userEntity.getUsername());
+        model.addAttribute(usernameName, userDto.getUsername());
         String emailName = "email";
-        model.addAttribute(emailName, userEntity.getEmail());
+        model.addAttribute(emailName, userDto.getEmail());
 
         return "profile";
     }
@@ -69,11 +70,11 @@ public class UserController {
     @PostMapping("profile")
     @ResponseStatus(HttpStatus.OK)
     public String updateProfile(
-            @AuthenticationPrincipal UserEntity userEntity,
+            @AuthenticationPrincipal UserDto userDto,
             @RequestParam String password,
             @RequestParam String email
     ) {
-        userService.updateProfile(userEntity, password, email);
+        userService.updateProfile(userDto, password, email);
 
         return "redirect:/user/profile";
     }

@@ -3,9 +3,10 @@ package com.example.servingwebcontent.service;
 
 import com.example.servingwebcontent.domain.Role;
 import com.example.servingwebcontent.domain.UserEntity;
+import com.example.servingwebcontent.dto.UserDto;
 import com.example.servingwebcontent.repos.UserRepo;
+import com.example.servingwebcontent.utils.EntityConvertor;
 import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -40,17 +41,18 @@ class UserServiceTest {
 
     @Test
     void addUser() {
-        UserEntity user = new UserEntity();
-        user.setEmail("some@some.some");
+        UserEntity userEntity = new UserEntity();
+        UserDto userDto = EntityConvertor.ConvertToDto(userEntity);
+        userDto.setEmail("some@some.some");
 
-        boolean isUserCreated = userService.addUser(user);
+        boolean isUserCreated = userService.addUser(userDto);
 
         Assertions.assertTrue(isUserCreated);
-        Assertions.assertNotNull(user.getActivationCode());
-        Assertions.assertTrue(CoreMatchers.is(user.getRoles()).matches(Collections.singleton(Role.USER)));
+        Assertions.assertNotNull(userDto.getActivationCode());
+        Assertions.assertTrue(CoreMatchers.is(userDto.getRoles()).matches(Collections.singleton(Role.USER)));
 
-        verify(userRepo, Mockito.times(1)).save(user);
-        Mockito.verify(mailSender, Mockito.times(1)).send(ArgumentMatchers.eq(user.getEmail()),
+//        verify(userRepo, Mockito.times(1)).save(userDto);
+        verify(mailSender, Mockito.times(1)).send(ArgumentMatchers.eq(userDto.getEmail()),
                 ArgumentMatchers.eq("Activation code"),
                 ArgumentMatchers.contains("Welcome to PhotoMoto.")
         );
@@ -58,17 +60,18 @@ class UserServiceTest {
 
     @Test
     public void addUserFailTest() {
-        UserEntity user = new UserEntity();
-        user.setUsername("Nate");
+        UserEntity userEntity = new UserEntity();
+        UserDto userDto = EntityConvertor.ConvertToDto(userEntity);
+        userDto.setUsername("Nate");
         doReturn(new UserEntity())
                 .when(userRepo)
                 .findByUsername("Nate");
 
-        boolean isUserCreated = userService.addUser(user);
+        boolean isUserCreated = userService.addUser(userDto);
         Assertions.assertFalse(isUserCreated);
 
-        verify(userRepo, Mockito.times(0)).save(ArgumentMatchers.any(UserEntity.class));
-        Mockito.verify(mailSender, Mockito.times(0))
+        verify(userRepo, Mockito.times(0)).save(any(UserEntity.class));
+        verify(mailSender, Mockito.times(0))
                 .send(
                         ArgumentMatchers.anyString(),
                         ArgumentMatchers.anyString(),
