@@ -42,7 +42,7 @@ class UserServiceTest {
     @Test
     void addUser() {
         UserEntity userEntity = new UserEntity();
-        UserDto userDto = EntityConvertor.ConvertToDto(userEntity);
+        UserDto userDto = EntityConvertor.convertToDto(userEntity);
         userDto.setEmail("some@some.some");
 
         boolean isUserCreated = userService.addUser(userDto);
@@ -61,7 +61,7 @@ class UserServiceTest {
     @Test
     public void addUserFailTest() {
         UserEntity userEntity = new UserEntity();
-        UserDto userDto = EntityConvertor.ConvertToDto(userEntity);
+        UserDto userDto = EntityConvertor.convertToDto(userEntity);
         userDto.setUsername("Nate");
         doReturn(new UserEntity())
                 .when(userRepo)

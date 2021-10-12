@@ -29,7 +29,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity userEntity = userRepo.findByUsername(username);
-        UserDto userDto = EntityConvertor.ConvertToDto(userEntity);
+        UserDto userDto = EntityConvertor.convertToDto(userEntity);
 
         if (userDto == null) {
             throw new UsernameNotFoundException("User not found");
@@ -66,7 +66,7 @@ public class UserService implements UserDetailsService {
         userDto.setActivationCode(UUID.randomUUID().toString());
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        UserEntity userEntity = EntityConvertor.ConvertToEntity(userDto);
+        UserEntity userEntity = EntityConvertor.convertToEntity(userDto);
         userRepo.save(userEntity);
 
         sendMessage(userDto);
@@ -120,7 +120,7 @@ public class UserService implements UserDetailsService {
             userDto.setPassword(passwordEncoder.encode(password));
         }
 
-        userRepo.save(EntityConvertor.ConvertToEntity(userDto));
+        userRepo.save(EntityConvertor.convertToEntity(userDto));
 
         if (isEmailChanged(email, userEmail)) {
             sendMessage(userDto);

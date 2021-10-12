@@ -34,7 +34,7 @@ public class RegistrationController {
     @PostMapping("/registration")
     @ResponseStatus(HttpStatus.OK)
     public String addUser(@Valid UserEntity userEntity, BindingResult bindingResult, Model model) {
-        UserDto userDto = EntityConvertor.ConvertToDto(userEntity);
+        UserDto userDto = EntityConvertor.convertToDto(userEntity);
         String registrationName = "registration";
         if (userDto.getPassword() != null && !userDto.getPassword().equals(userDto.getPassword2())){
             String passwordErrorName = "passwordError";

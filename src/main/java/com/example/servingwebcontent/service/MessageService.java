@@ -5,6 +5,7 @@ import com.example.servingwebcontent.domain.MessageEntity;
 import com.example.servingwebcontent.domain.UserEntity;
 import com.example.servingwebcontent.dto.MessageDto;
 import com.example.servingwebcontent.repos.MessageRepo;
+import com.example.servingwebcontent.utils.EntityConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import com.example.servingwebcontent.utils.MappingUtils;
 
 import javax.transaction.Transactional;
 import java.io.File;
@@ -26,8 +26,6 @@ public class MessageService {
     @Autowired
     private MessageRepo messageRepo;
 
-
-    private MappingUtils mappingUtils;
 
     @Value("${upload.path}")
     private String uploadPath;
@@ -45,12 +43,12 @@ public class MessageService {
 
         if (filter != null && !filter.isEmpty()) {
             messagesDto = messageRepo.findByTag(filter).stream()
-                    .map(MappingUtils::mapToMessageDto)
+                    .map(EntityConvertor::convertToDto)
                     .collect(Collectors.toList());
         } else {
             messageEntities = (List<MessageEntity>) messageRepo.findAll();
             messagesDto = messageEntities.stream()
-                    .map(MappingUtils::mapToMessageDto)
+                    .map(EntityConvertor::convertToDto)
                     .collect(Collectors.toList());
         }
 
@@ -89,7 +87,7 @@ public class MessageService {
         List<MessageEntity> messageEntities;
         List<MessageDto> messagesDto;
         messageEntities = (List<MessageEntity>) messageRepo.findAll();
-        messagesDto = messageEntities.stream().map(MappingUtils::mapToMessageDto).collect(Collectors.toList());
+        messagesDto = messageEntities.stream().map(EntityConvertor::convertToDto).collect(Collectors.toList());
 
 
         model.addAttribute(messagesFieldName, messagesDto);

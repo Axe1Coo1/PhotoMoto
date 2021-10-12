@@ -14,15 +14,16 @@ public class EntityConvertor {
     public EntityConvertor() {
         modelMapper = new ModelMapper();
     }
-    public static MessageDto ConvertToDto(MessageEntity messageEntity){
+    public static MessageDto convertToDto(MessageEntity messageEntity){
         return modelMapper.map(messageEntity, MessageDto.class);
     }
-    public static UserDto ConvertToDto(UserEntity userEntity){
+    public static UserDto convertToDto(UserEntity userEntity){
         return modelMapper.map(userEntity, UserDto.class);
     }
-    public static UserEntity ConvertToEntity(UserDto userDto){
+    public static UserEntity convertToEntity(UserDto userDto){
         return modelMapper.map(userDto, UserEntity.class);
     }
+
 
 
 }
