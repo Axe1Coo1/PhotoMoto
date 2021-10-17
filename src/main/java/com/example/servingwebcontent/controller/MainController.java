@@ -3,6 +3,7 @@ package com.example.servingwebcontent.controller;
 import com.example.servingwebcontent.domain.MessageEntity;
 import com.example.servingwebcontent.domain.UserEntity;
 import com.example.servingwebcontent.service.MessageService;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,11 +37,12 @@ public class MainController {
 
     @PostMapping("/main")
     @ResponseStatus(HttpStatus.OK)
+    @SneakyThrows
     public String addMessage(@AuthenticationPrincipal UserEntity userEntity,
                              @Valid MessageEntity messageEntity,
                              BindingResult bindingResult,
                              Model model,
-                             @RequestParam("file") MultipartFile file) throws IOException {
+                             @RequestParam("file") MultipartFile file){
         return messageService.addMessages(userEntity, messageEntity, bindingResult, model, file);
     }
 
