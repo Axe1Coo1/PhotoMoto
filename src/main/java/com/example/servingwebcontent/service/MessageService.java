@@ -5,7 +5,7 @@ import com.example.servingwebcontent.domain.MessageEntity;
 import com.example.servingwebcontent.domain.UserEntity;
 import com.example.servingwebcontent.dto.MessageDto;
 import com.example.servingwebcontent.repos.MessageRepo;
-import com.example.servingwebcontent.utils.EntityConvertor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,11 +17,17 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 public class MessageService {
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     private MessageRepo messageRepo;
@@ -43,12 +49,12 @@ public class MessageService {
 
         if (filter != null && !filter.isEmpty()) {
             messagesDto = messageRepo.findByTag(filter).stream()
-                    .map(EntityConvertor::convertToDto)
+                    .map(o -> modelMapper.map(o, MessageDto.class))
                     .collect(Collectors.toList());
         } else {
             messageEntities = (List<MessageEntity>) messageRepo.findAll();
             messagesDto = messageEntities.stream()
-                    .map(EntityConvertor::convertToDto)
+                    .map(o -> modelMapper.map(o, MessageDto.class))
                     .collect(Collectors.toList());
         }
 
@@ -87,7 +93,7 @@ public class MessageService {
         List<MessageEntity> messageEntities;
         List<MessageDto> messagesDto;
         messageEntities = (List<MessageEntity>) messageRepo.findAll();
-        messagesDto = messageEntities.stream().map(EntityConvertor::convertToDto).collect(Collectors.toList());
+        messagesDto = messageEntities.stream().map(o -> modelMapper.map(o, MessageDto.class)).collect(Collectors.toList());
 
 
         model.addAttribute(messagesFieldName, messagesDto);

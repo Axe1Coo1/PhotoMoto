@@ -5,8 +5,9 @@ import com.example.servingwebcontent.domain.Role;
 import com.example.servingwebcontent.domain.UserEntity;
 import com.example.servingwebcontent.dto.UserDto;
 import com.example.servingwebcontent.repos.UserRepo;
-import com.example.servingwebcontent.utils.EntityConvertor;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,11 +26,14 @@ public class UserService implements UserDetailsService {
     private final MailSender mailSender;
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity userEntity = userRepo.findByUsername(username);
-        UserDto userDto = EntityConvertor.convertToDto(userEntity);
+        UserDto userDto = modelMapper.map(userEntity, UserDto.class);
 
         if (userDto == null) {
             throw new UsernameNotFoundException("User not found");
@@ -66,7 +70,7 @@ public class UserService implements UserDetailsService {
         userDto.setActivationCode(UUID.randomUUID().toString());
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        UserEntity userEntity = EntityConvertor.convertToEntity(userDto);
+        UserEntity userEntity = modelMapper.map(userDto, UserEntity.class);
         userRepo.save(userEntity);
 
         sendMessage(userDto);
@@ -120,7 +124,7 @@ public class UserService implements UserDetailsService {
             userDto.setPassword(passwordEncoder.encode(password));
         }
 
-        userRepo.save(EntityConvertor.convertToEntity(userDto));
+        userRepo.save(modelMapper.map(userDto, UserEntity.class));
 
         if (isEmailChanged(email, userEmail)) {
             sendMessage(userDto);

@@ -5,13 +5,13 @@ import com.example.servingwebcontent.domain.Role;
 import com.example.servingwebcontent.domain.UserEntity;
 import com.example.servingwebcontent.dto.UserDto;
 import com.example.servingwebcontent.repos.UserRepo;
-import com.example.servingwebcontent.utils.EntityConvertor;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -30,6 +30,8 @@ class UserServiceTest {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @MockBean
     private UserRepo userRepo;
@@ -42,7 +44,7 @@ class UserServiceTest {
     @Test
     void addUser() {
         UserEntity userEntity = new UserEntity();
-        UserDto userDto = EntityConvertor.convertToDto(userEntity);
+        UserDto userDto = modelMapper.map(userEntity, UserDto.class);
         userDto.setEmail("some@some.some");
 
         boolean isUserCreated = userService.addUser(userDto);
@@ -61,7 +63,7 @@ class UserServiceTest {
     @Test
     public void addUserFailTest() {
         UserEntity userEntity = new UserEntity();
-        UserDto userDto = EntityConvertor.convertToDto(userEntity);
+        UserDto userDto = modelMapper.map(userEntity, UserDto.class);
         userDto.setUsername("Nate");
         doReturn(new UserEntity())
                 .when(userRepo)
