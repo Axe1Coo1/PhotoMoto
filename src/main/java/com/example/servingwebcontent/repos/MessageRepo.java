@@ -1,12 +1,14 @@
 package com.example.servingwebcontent.repos;
 
-import com.example.servingwebcontent.domain.Message;
+import com.example.servingwebcontent.domain.MessageEntity;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface MessageRepo extends CrudRepository<Message, Long> {
+@Repository
+public interface MessageRepo extends CrudRepository<MessageEntity, Long> {
 
-    List<Message> findByTag(String tag);
+    List<MessageEntity> findByTag(String tag);
 
 }

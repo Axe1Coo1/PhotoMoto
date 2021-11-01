@@ -1,10 +1,11 @@
 package com.example.servingwebcontent.controller;
 
-import com.example.servingwebcontent.domain.Message;
-import com.example.servingwebcontent.domain.User;
-import com.example.servingwebcontent.repos.MessageRepo;
+import com.example.servingwebcontent.domain.MessageEntity;
+import com.example.servingwebcontent.domain.UserEntity;
+import com.example.servingwebcontent.service.MessageService;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,90 +13,40 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.File;
-import java.io.IOException;
 import java.util.Map;
-import java.util.UUID;
 
 @Controller
 public class MainController {
+
     @Autowired
-    private MessageRepo messageRepo;
-
-    @Value("${upload.path}")
-    private String uploadPath;
-
-    @GetMapping("/info")
-    public String info(Map<String, Object> model) {
-        return "info";
-    }
+    private MessageService messageService;
 
     @GetMapping("/")
+    @ResponseStatus(HttpStatus.OK)
     public String greeting(Map<String, Object> model) {
         return "greeting";
     }
 
     @GetMapping("/main")
-    public String main(@RequestParam(required = false, defaultValue = "") String filter, Model model) {
-        Iterable<Message> messages = messageRepo.findAll();
-
-        if (filter != null && !filter.isEmpty()) {
-            messages = messageRepo.findByTag(filter);
-        } else {
-            messages = messageRepo.findAll();
-        }
-
-        model.addAttribute("messages", messages);
-        model.addAttribute("filter", filter);
-
-
-        return "main";
+    @ResponseStatus(HttpStatus.OK)
+    public String findMessages(@RequestParam(required = false, defaultValue = "") String filter, Model model) {
+        return  messageService.mainFindAll(filter, model);
     }
 
     @PostMapping("/main")
-    public String add(
-            @AuthenticationPrincipal User user,
-            @Valid Message message,
-            BindingResult bindingResult,
-            Model model,
-            @RequestParam("file") MultipartFile file
-    ) throws IOException {
-        message.setAuthor(user);
-
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
-            model.mergeAttributes(errorsMap);
-            model.addAttribute("message", message);
-        } else {
-            if (file != null && !file.getOriginalFilename().isEmpty()) {
-                File uploadDir = new File(uploadPath);
-                if (!uploadDir.exists()) {
-                    uploadDir.mkdir();
-                }
-
-                String uuidFile = UUID.randomUUID().toString();
-                String resultFilename = uuidFile + "." + file.getOriginalFilename();
-
-                file.transferTo(new File(uploadPath + "/" + resultFilename));
-
-                message.setFilename(resultFilename);
-            }
-
-            model.addAttribute("message", null);
-
-            messageRepo.save(message);
-        }
-        Iterable<Message> messages = messageRepo.findAll();
-
-        model.addAttribute("messages", messages);
-
-        return "main";
+    @ResponseStatus(HttpStatus.OK)
+    @SneakyThrows
+    public String addMessage(@AuthenticationPrincipal UserEntity userEntity,
+                             @Valid MessageEntity messageEntity,
+                             BindingResult bindingResult,
+                             Model model,
+                             @RequestParam("file") MultipartFile file){
+        return messageService.addMessages(userEntity, messageEntity, bindingResult, model, file);
     }
-
-
 
 
 }

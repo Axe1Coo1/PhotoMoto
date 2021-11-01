@@ -6,6 +6,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class MailSender {
     @Autowired
@@ -14,7 +16,7 @@ public class MailSender {
     @Value("${spring.mail.username}")
     private String username;
 
-
+    @Transactional
     public void send(String emailTo, String subject, String message) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
 
@@ -24,6 +26,5 @@ public class MailSender {
         mailMessage.setText(message);
 
         mailSender.send(mailMessage);
-
     }
 }

@@ -1,16 +1,16 @@
 package com.example.servingwebcontent.controller;
 
 import com.example.servingwebcontent.domain.Role;
-import com.example.servingwebcontent.domain.User;
+import com.example.servingwebcontent.domain.UserEntity;
+import com.example.servingwebcontent.dto.UserDto;
 import com.example.servingwebcontent.service.UserService;
-import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import java.util.Map;
 
@@ -24,48 +24,57 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public String userList(Model model) {
-        model.addAttribute("users", userService.findAll());
+        String usersName = "users";
+        model.addAttribute(usersName, userService.findAll());
 
         return "userList";
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("{user}")
-    public String userEditForm(@PathVariable User user, Model model) {
-        model.addAttribute("user", user);
-        model.addAttribute("roles", Role.values());
+    @GetMapping("{userEntity}")
+    @ResponseStatus(HttpStatus.OK)
+    public String userEditForm(@PathVariable UserEntity userEntity, Model model) {
+        model.addAttribute("user", userEntity);
+        String rolesName = "roles";
+        model.addAttribute(rolesName, Role.values());
 
         return "userEdit";
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
+    @ResponseStatus(HttpStatus.OK)
     public String userSave(
             @RequestParam String username,
             @RequestParam Map<String, String> form,
-            @RequestParam("userId") User user
+            @RequestParam("userEntity") UserEntity userEntity
     ) {
-        userService.saveUser(user, username, form);
+        userService.saveUser(userEntity, username, form);
 
         return "redirect:/user";
     }
 
     @GetMapping("profile")
-    public String getProfile(Model model, @AuthenticationPrincipal User user) {
-        model.addAttribute("username", user.getUsername());
-        model.addAttribute("email", user.getEmail());
+    @ResponseStatus(HttpStatus.OK)
+    public String getProfile(Model model, @AuthenticationPrincipal UserDto userDto) {
+        String usernameName = "username";
+        model.addAttribute(usernameName, userDto.getUsername());
+        String emailName = "email";
+        model.addAttribute(emailName, userDto.getEmail());
 
         return "profile";
     }
 
     @PostMapping("profile")
+    @ResponseStatus(HttpStatus.OK)
     public String updateProfile(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal UserDto userDto,
             @RequestParam String password,
             @RequestParam String email
     ) {
-        userService.updateProfile(user, password, email);
+        userService.updateProfile(userDto, password, email);
 
         return "redirect:/user/profile";
     }

@@ -6,14 +6,17 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.io.File;
+
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
-    @Value("${upload.path}")
-    private String uploadPath;
+
+    private final String uploadPath = "/" + new File("src/main/resources/uploads")
+            .getAbsolutePath()
+            .replace("\\", "/");
 
 
-
-    public void addViewControllers (ViewControllerRegistry registry){
+    public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/login").setViewName("login");
     }
 

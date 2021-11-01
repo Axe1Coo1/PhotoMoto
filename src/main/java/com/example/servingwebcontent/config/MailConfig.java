@@ -38,9 +38,11 @@ public class MailConfig {
         mailSender.setPassword(password);
 
         Properties properties = mailSender.getJavaMailProperties();
+        String mailDebugName = "mail.debug";
+        String mailTransportProtocolName = "mail.transport.protocol";
 
-        properties.setProperty("mail.transport.protocol", protocol);
-        properties.setProperty("mail.debug", debug);
+        properties.setProperty(mailTransportProtocolName, protocol);
+        properties.setProperty(mailDebugName, debug);
 
 
         return mailSender;
