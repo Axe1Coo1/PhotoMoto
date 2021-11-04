@@ -65,7 +65,8 @@ public class MessageService {
     }
 
     @Transactional
-    public String addMessages(UserEntity userEntity, MessageEntity messageEntity, BindingResult bindingResult, Model model, MultipartFile file) throws IOException {
+    public String addMessages(UserEntity userEntity, MessageEntity messageEntity, BindingResult bindingResult,
+                              Model model, MultipartFile file) throws IOException {
         messageEntity.setAuthor(userEntity);
         if (bindingResult.hasErrors()) {
             Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
@@ -93,7 +94,9 @@ public class MessageService {
         List<MessageEntity> messageEntities;
         List<MessageDto> messagesDto;
         messageEntities = (List<MessageEntity>) messageRepo.findAll();
-        messagesDto = messageEntities.stream().map(o -> modelMapper.map(o, MessageDto.class)).collect(Collectors.toList());
+        messagesDto = messageEntities.stream()
+                .map(o -> modelMapper.map(o, MessageDto.class))
+                .collect(Collectors.toList());
 
 
         model.addAttribute(messagesFieldName, messagesDto);
