@@ -74,6 +74,14 @@ public class MainController {
         return messageService.updateMessage(currentUser, user, message, text, tag, file);
     }
 
+    @GetMapping ("/del-user-messages/{user}")
+    public String deleteMessages(
+            @PathVariable Long user,
+            @RequestParam("messageId") Long messageId
+    ) {
+        return messageService.deleteMessage(user, messageId);
+    }
+
 
 
 

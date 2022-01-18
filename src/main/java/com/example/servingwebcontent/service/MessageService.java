@@ -33,8 +33,9 @@ public class MessageService {
     private MessageRepo messageRepo;
 
 
-    @Value("${upload.path}")
-    private String uploadPath;
+    private final String uploadPath = "/" + new File("src/main/resources/uploads")
+            .getAbsolutePath()
+            .replace("\\", "/");
 
     String messageFieldName = "message";
     String messagesFieldName = "messages";
@@ -133,4 +134,11 @@ public class MessageService {
         }
         return "redirect:/user-messages/" + user;
     }
+
+    @Transactional
+    public String deleteMessage(Long user, Long messageId) {
+        messageRepo.deleteById(messageId);
+        return "redirect:/user-messages/" + user;
+    }
+
 }
