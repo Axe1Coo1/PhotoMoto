@@ -6,6 +6,7 @@ import com.example.servingwebcontent.domain.UserEntity;
 import com.example.servingwebcontent.dto.MessageDto;
 import com.example.servingwebcontent.dto.UserDto;
 import com.example.servingwebcontent.repos.MessageRepo;
+import com.example.servingwebcontent.repos.UserRepo;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ public class MessageService {
 
     @Autowired
     private MessageRepo messageRepo;
+
 
 
     private final String uploadPath = "/" + new File("src/main/resources/uploads")
@@ -140,5 +142,4 @@ public class MessageService {
         messageRepo.deleteById(messageId);
         return "redirect:/user-messages/" + user;
     }
-
 }

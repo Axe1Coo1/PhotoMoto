@@ -81,8 +81,4 @@ public class MainController {
     ) {
         return messageService.deleteMessage(user, messageId);
     }
-
-
-
-
 }

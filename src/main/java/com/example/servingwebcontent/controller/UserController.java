@@ -78,4 +78,15 @@ public class UserController {
 
         return "redirect:/user/profile";
     }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping ("/del-user/{user}")
+    @ResponseStatus(HttpStatus.OK)
+    public String deleteUser(
+            @RequestParam("userId") Long userId
+    ){
+        userService.deleteUser(userId);
+
+        return "redirect:/user";
+    }
 }

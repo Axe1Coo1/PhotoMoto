@@ -135,4 +135,10 @@ public class UserService implements UserDetailsService {
         return email != null && !email.equals((userEmail)) ||
                 userEmail != null && !userEmail.equals(email);
     }
+
+    @Transactional
+    public Boolean deleteUser(Long userId) {
+        userRepo.deleteById(userId);
+        return true;
+    }
 }
