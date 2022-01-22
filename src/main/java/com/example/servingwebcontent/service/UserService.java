@@ -138,6 +138,8 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public Boolean deleteUser(Long userId) {
+
+
         userRepo.deleteById(userId);
         return true;
     }
