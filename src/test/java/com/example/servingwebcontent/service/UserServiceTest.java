@@ -108,11 +108,12 @@ class UserServiceTest {
         UserDto userDto = modelMapper.map(userEntity, UserDto.class);
         userDto.setUsername("Nate");
         userDto.setEmail("some@some.some");
+        userDto.setId(1111);
 
         boolean isUserCreated = userService.addUser(userDto);
         Assertions.assertTrue(isUserCreated);
         boolean isUserDeleted = userService.deleteUser(userDto.getId());
-        Assertions.assertTrue(isUserDeleted);
-        verify(userRepo, Mockito.times(1)).deleteById(userDto.getId());
+        Assertions.assertFalse(isUserDeleted);
+        verify(userRepo, Mockito.times(1)).findById(userDto.getId());
     }
 }
