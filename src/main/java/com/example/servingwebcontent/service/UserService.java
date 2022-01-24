@@ -138,9 +138,9 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public Boolean deleteUser(Long userId) {
-
-
-        userRepo.deleteById(userId);
-        return true;
+        if (userRepo.findById(userId).isPresent()){
+            userRepo.deleteById(userId);
+            return true;
+        }else return false;
     }
 }
