@@ -1,24 +1,24 @@
 # Project Title
 
-This project was inspired by the tweater. I did a my variation of social network. It's my firs attempt, please be patience :) This project is also my bachelor work.
+This project was inspired by Tweeter. I have done my version of a social network. It's my first attempt, please, be patient :) This project is also my Bachelor degree work.
 
 ## Getting Started
 
-If you need to get a copy of the project for run on your local machine for development and testing purposes, you ned to copy a link to your IDE and clone the porject on your system. 
-SBT is not install at the moment.
+If you want to get a copy of the project to run it on your local machine for developing and testing purposes, you need to copy the link into your IDE and clone the porject in your system. 
+SBT is not installed at the moment.
 
 ### Prerequisites
 
-Thats all you need to run this project is an IDE and a link of this repository.
+All you need to run this project is an IDE and the link of this repository.
 
 ### Installing
 
-You need to choose "Project from Version Control..." option in your IDE and paste the URL link of this project.
+Choose "Project from Version Control..." option in your IDE and paste the URL link of the project.
 
 ## Running the tests
 
-Project also include some test for furture development convenience.
-Yopu can run their form your IDE.
+This project also includes some tests for the convenience of the following development.
+You can run them from your IDE.
 
 ## Built With
 
@@ -40,4 +40,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Huge thanks to my dear friend Elena [le5n](https://github.com/le5n) for inspiration and useful tips!
+* Huge thanks to my dearest friend Elena [le5n](https://github.com/le5n) for the inspiration and useful tips!
