@@ -1,6 +1,6 @@
 # Project Title
 
-This project was inspired by Tweeter. I have done my version of a social network. It's my first attempt, please, be patient :) This project is also my Bachelor degree work.
+This project was inspired by Twitter. I have done my version of a social network. It's my first attempt, please, be patient :) This project is also my Bachelor degree work.
 
 ## Getting Started
 
